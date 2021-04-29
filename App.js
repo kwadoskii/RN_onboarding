@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,14 +12,14 @@ export default function App() {
   const [isInitialLaunch, setIsInitialLaunch] = useState(null);
 
   useEffect(() => {
-    AsyncStorage.getItem("alreadyLaunched").then((value) => {
-      if (value === null) {
+    AsyncStorage.getItem("alreadyLaunched")
+      .then((value) => {
+        if (value !== null) return setIsInitialLaunch(false);
+
         AsyncStorage.setItem("alreadyLaunched", "true");
         setIsInitialLaunch(true);
-      } else {
-        setIsInitialLaunch(false);
-      }
-    });
+      })
+      .catch((e) => {});
   }, []);
 
   if (isInitialLaunch === null) return null;
@@ -36,12 +35,3 @@ export default function App() {
     <LoginScreen />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
